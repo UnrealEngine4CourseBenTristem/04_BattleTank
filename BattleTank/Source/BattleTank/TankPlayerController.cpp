@@ -4,6 +4,22 @@
 
 
 
+void ATankPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	//UE_LOG(LogTemp, Warning, TEXT("TankPlayerController BeginPlay()"));
+
+	auto ControlledTank = GetControlledTank();
+
+	if (!ControlledTank) {
+		UE_LOG(LogTemp, Warning, TEXT("Not in possession of a tank"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("In possession of tank: %s"), *(ControlledTank->GetName()) );
+	}
+}
+
 ATank* ATankPlayerController::GetControlledTank() const
 {
 	/*
