@@ -18,6 +18,7 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 private:
+	ATank * GetControlledTank() const;
 
 	// Aim towards cross hair
 	void AimTowardsCrosshair();
@@ -28,10 +29,13 @@ private:
 	// How far ahead of the player can we reach in cm
 	float Reach = 10000.0;
 
-	
+	// Screen crosshair location multiplier to get the X and Y positions as a percentage of the screen size
+	UPROPERTY(EditAnywhere)
+		float CrosshairXLocation = 0.5f; // half-way across the screen
+		float CrosshairYLocation = 0.33333f;
 
 public:
-	ATank* GetControlledTank() const;
+	
 
 	virtual void BeginPlay() override;
 
