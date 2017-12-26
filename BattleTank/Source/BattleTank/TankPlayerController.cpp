@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-#include "BattleTank.h"
-#include "TankPlayerController.h"
 
+#include "TankPlayerController.h"
+#include "Engine/World.h"
 
 
 
@@ -23,6 +23,8 @@ void ATankPlayerController::BeginPlay()
 	}
 }
 
+
+
 ATank* ATankPlayerController::GetControlledTank() const
 {
 	/*
@@ -43,15 +45,37 @@ void ATankPlayerController::Tick(float DeltaTime)
 void ATankPlayerController::AimTowardsCrosshair()
 {
 	if (!GetControlledTank()) { return; }
+
 	
+	FVector OutHitLocation;
 
-	// Get world location if linetrace through crosshair dot
-	// if it hits the landscape 
-		// tell player controlled tank to aim at this point 
+	if (GetSightRayHitLocation(OutHitLocation)) //  Has side-effect, is going to line trace
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OutHitLocation : %s "), *(OutHitLocation.ToString()));
+		
+		  // TODO: Tell player controlled tank to aim at this point 
 
-	UE_LOG(LogTemp, Warning, TEXT("Tick tock"));
+		//UE_LOG(LogTemp, Warning, TEXT("Tick tock"));
+
+	}
+	else
+	{
+	
+		
+	}
+	
 
 	
 
 }
+
+// Get world location if linetrace through crosshair dot
+bool ATankPlayerController::GetSightRayHitLocation(FVector& OutHitLocation) const
+{
+	
+	OutHitLocation = FVector(1.0);
+	
+	return true;
+}
+
 

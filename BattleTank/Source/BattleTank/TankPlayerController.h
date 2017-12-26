@@ -22,6 +22,14 @@ private:
 	// Aim towards cross hair
 	void AimTowardsCrosshair();
 
+	// Return an OUT parameter, True if hit landscape
+	bool GetSightRayHitLocation(FVector& OutHitLocation) const;
+
+	// How far ahead of the player can we reach in cm
+	float Reach = 10000.0;
+
+	
+
 public:
 	ATank* GetControlledTank() const;
 
@@ -29,6 +37,7 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
 
 	
 };
