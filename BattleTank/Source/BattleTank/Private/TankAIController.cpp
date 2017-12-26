@@ -3,11 +3,15 @@
 #include "TankAIController.h"
 
 
+
+
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
 	auto ControlledTank = GetControlledTank();
+	auto PlayerControlledTank = GetPlayerControlledTank();
+
 
 	if (!ControlledTank)
 	{
@@ -17,6 +21,16 @@ void ATankAIController::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AI in possession of tank: %s"), *(ControlledTank->GetName()));
 	}
+
+
+	if (!PlayerControlledTank) {
+		UE_LOG(LogTemp, Warning, TEXT("AI couldn't find player controller"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AI found player controller: %s"), *(PlayerControlledTank->GetName()));
+	}
+
 }
 
 ATank* ATankAIController::GetControlledTank() const
@@ -25,4 +39,24 @@ ATank* ATankAIController::GetControlledTank() const
 	Because we need to access members of ATank, without the cast you wouldn't be able to call any of the functions of ATank.
 	*/
 	return Cast<ATank>(GetPawn());
+}
+
+
+ATank* ATankAIController::GetPlayerControlledTank() const
+{
+	/*
+	Because we need to access members of ATank, without the cast you wouldn't be able to call any of the functions of ATank.
+	*/
+
+	auto PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+
+	if (!PlayerPawn)
+	{
+		return nullptr;
+	}
+	else
+	{
+		return Cast<ATank>(PlayerPawn);
+	}
+	
 }
