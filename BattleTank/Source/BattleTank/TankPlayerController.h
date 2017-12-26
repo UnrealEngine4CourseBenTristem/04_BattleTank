@@ -17,10 +17,18 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
-	
+private:
+
+	// Aim towards cross hair
+	void AimTowardsCrosshair();
+
 public:
 	ATank* GetControlledTank() const;
 
 	virtual void BeginPlay() override;
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 	
 };

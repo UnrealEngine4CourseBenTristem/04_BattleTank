@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAIController.h"
+#include "Engine/World.h"
 
 
 
@@ -15,7 +16,7 @@ void ATankAIController::BeginPlay()
 
 	if (!ControlledTank)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AI not possession of a tank"));
+		UE_LOG(LogTemp, Warning, TEXT("AI not in possession of a tank"));
 	}
 	else
 	{
