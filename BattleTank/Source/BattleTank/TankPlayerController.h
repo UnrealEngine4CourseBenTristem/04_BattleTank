@@ -26,6 +26,9 @@ private:
 	// Return an OUT parameter, True if hit landscape
 	bool GetSightRayHitLocation(FVector& OutHitLocation) const;
 
+	// Put into LookDirection parameter the direction in which the TankPlayerController is looking
+	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
+
 	// How far ahead of the player can we reach in cm
 	float Reach = 10000.0;
 
