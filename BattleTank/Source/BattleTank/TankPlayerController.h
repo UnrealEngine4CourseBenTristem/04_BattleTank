@@ -29,8 +29,11 @@ private:
 	// Put into LookDirection parameter the direction in which the TankPlayerController is looking
 	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
 
+	// return the result of a line trace
+	bool GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const;
+
 	// How far ahead of the player can we reach in cm
-	float Reach = 10000.0;
+	float LineTraceRange = 100000.0;
 
 	// Screen crosshair location multiplier to get the X and Y positions as a percentage of the screen size
 	UPROPERTY(EditAnywhere)
