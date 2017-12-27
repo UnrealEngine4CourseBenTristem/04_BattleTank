@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAimingComponent.h"
-
+#include "Engine.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -12,6 +12,16 @@ UTankAimingComponent::UTankAimingComponent()
 
 	// ...
 }
+
+void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent* BarrelToSet)
+{
+
+	Barrel = BarrelToSet;
+
+}
+
+
+
 
 
 // Called when the game starts
@@ -33,8 +43,14 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 }
 
 
-void UTankAimingComponent::AimAt(FVector HitLocation)
+void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
-	auto OurTankName = GetOwner()->GetName();
-	UE_LOG(LogTemp, Warning, TEXT("Tank.cpp :- %s aiming at location is : %s "), *OurTankName, *HitLocation.ToString());
+	//auto OurTankName = GetOwner()->GetName(); // GetOwner causes intellisense error if Engine.h is not included at the top of this file
+	//auto BarrelLocation = Barrel->GetComponentLocation().ToString() ;
+	//UE_LOG(LogTemp, Warning, TEXT("Tank.cpp :- %s aiming at location : %s  : from barrel location %s "), *OurTankName, *HitLocation.ToString(), *BarrelLocation);
+
+	UE_LOG(LogTemp, Warning, TEXT("Launchspeed %f "), LaunchSpeed);
+
 }
+
+

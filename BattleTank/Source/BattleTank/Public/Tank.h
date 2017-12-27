@@ -11,10 +11,18 @@ class BATTLETANK_API ATank : public APawn
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY(EditAnywhere, Category = Firing)
+		float LaunchSpeed = 10000.0f; // TODO: find sensible starting value default
+
 public:
 	// Sets default values for this pawn's properties
 	ATank();
 	void AimAt( FVector HitLocation);
+
+	// Barrel reference able to be called from blueprint
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void SetBarrelReference(UStaticMeshComponent* BarrelToSet);
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,5 +39,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	
+
 	
 };
