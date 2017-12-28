@@ -4,6 +4,7 @@
 #include "Tank.h"
 
 
+
 // Sets default values
 ATank::ATank()
 {
@@ -12,6 +13,7 @@ ATank::ATank()
 
 	// No need to protect pointers as added in the constructor
 	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>("Aiming Component");
+
 }
 
 
@@ -39,7 +41,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 
 
-void ATank::SetBarrelReference(UStaticMeshComponent* BarrelToSet)
+void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
 {
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
 }

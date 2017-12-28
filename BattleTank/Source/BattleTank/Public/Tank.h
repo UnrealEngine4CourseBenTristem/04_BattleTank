@@ -4,7 +4,10 @@
 #include "TankAimingComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "TankBarrel.h"
 #include "Tank.generated.h"
+
+
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -22,7 +25,7 @@ public:
 
 	// Barrel reference able to be called from blueprint
 	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetBarrelReference(UStaticMeshComponent* BarrelToSet);
+	void SetBarrelReference(UTankBarrel* BarrelToSet);
 
 protected:
 	// Called when the game starts or when spawned
