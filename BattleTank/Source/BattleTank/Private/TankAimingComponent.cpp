@@ -5,6 +5,8 @@
 #include "Engine.h"
 #include "GameFramework/Gamemode.h"
 
+
+
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
 {
@@ -23,26 +25,6 @@ void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent* BarrelToSet)
 }
 
 
-
-
-
-// Called when the game starts
-void UTankAimingComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
 
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
@@ -83,12 +65,25 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		// Aim direction
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 
+		MoveBarrelTowards(AimDirection);
 
-		UE_LOG(LogTemp, Warning, TEXT("%s aiming at  %s "), *OurTankName, *AimDirection.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("%s aiming at  %s "), *OurTankName, *AimDirection.ToString());
 
 	}
 
 
 }
 
+void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
+{
+	/// Work out the difference between current barrel rotation, and AimDirection
+	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
+	auto AimAsRotator = AimDirection.Rotation();
+	auto DeltaRotator = AimAsRotator - BarrelRotator;
 
+	UE_LOG(LogTemp, Warning, TEXT("DeltaRotator is  %s "), *DeltaRotator.ToString());
+
+
+	// Move the barrel the right amount this frame
+	// Given a max elevation speed, and the frame time
+}
