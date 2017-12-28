@@ -46,6 +46,11 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 	// Start Location
 	FVector StartLocation = Barrel->GetSocketLocation(FName("BarrelFiringPoint"));
 
+	
+	/// The two lines below are for debug line traces
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetWorld()->GetFirstPlayerController()->GetPawn());
+
 	// Calculate the OutLaunchVelocity
 	if (	UGameplayStatics::SuggestProjectileVelocity(
 				this,
@@ -57,6 +62,11 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 				0,
 				0,
 				ESuggestProjVelocityTraceOption::DoNotTrace
+				//,FCollisionResponseParams::DefaultResponseParam,
+				//ActorsToIgnore,
+				//true
+				
+				
 
 			)
 		)
@@ -88,8 +98,8 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 
-	UE_LOG(LogTemp, Warning, TEXT("DeltaRotator is  %s "), *DeltaRotator.ToString());
+	// UE_LOG(LogTemp, Warning, TEXT("DeltaRotator is  %s "), *DeltaRotator.ToString());
 
 
-	Barrel->Elevate(5); // TODO: Remove magic number
+	Barrel->Elevate(DeltaRotator.Pitch); 
 }
