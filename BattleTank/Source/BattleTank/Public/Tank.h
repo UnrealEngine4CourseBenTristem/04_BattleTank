@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "TankBarrel.h"
+#include "TankTurret.h"
 #include "Tank.generated.h"
 
 
@@ -15,7 +16,7 @@ class BATTLETANK_API ATank : public APawn
 
 private:
 	UPROPERTY(EditAnywhere, Category = Firing)
-		float LaunchSpeed = 10000.0f; // TODO: find sensible starting value default
+		float LaunchSpeed = 4000.0f; // TODO: find sensible starting value default
 
 public:
 	// Sets default values for this pawn's properties
@@ -25,6 +26,10 @@ public:
 	// Barrel reference able to be called from blueprint
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
+
+	// Barrel reference able to be called from blueprint
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void SetTurretReference(UTankTurret* TurretToSet);
 
 protected:
 	// Called when the game starts or when spawned
