@@ -45,10 +45,20 @@ void ATank::SetTurretReference(UTankTurret* TurretToSet)
 	TankAimingComponent->SetTurretReference(TurretToSet);
 }
 
+
+
 // Aim at passed FVector
 void ATank::AimAt( FVector HitLocation)
 {
 	
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 
+}
+
+
+/// Fire the main barrel weapon
+void ATank::Fire()
+{
+	auto Time = GetWorld()->GetTimeSeconds();
+	UE_LOG(LogTemp, Warning, TEXT("%f Weapon fired "), Time);
 }
