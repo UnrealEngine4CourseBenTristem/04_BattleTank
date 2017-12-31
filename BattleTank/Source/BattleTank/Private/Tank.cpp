@@ -65,15 +65,22 @@ void ATank::AimAt( FVector HitLocation)
 /// Fire the main barrel weapon
 void ATank::Fire()
 {
-	if (!Barrel) { return; }
-	
-	/// Spawn a projectile at firing socket location and then call the LaunchProjectile method of the returned 
-	///  Projectile class 
-	auto LaunchedProjectile = GetWorld()->SpawnActor<AProjectile>(
-								ProjectileBlueprint,
-								Barrel->GetSocketLocation(FName("BarrelFiringPoint")),
-								Barrel->GetSocketRotation(FName("BarrelFiringPoint")) // ensure the projectile has the same rotation as the barrel
-								);
+	bool bIsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 
-	LaunchedProjectile->LaunchProjectile(LaunchSpeed);
+	if (Barrel && bIsReloaded) {
+
+		
+
+		/// Spawn a projectile at firing socket location and then call the LaunchProjectile method of the returned 
+		///  Projectile class 
+		auto LaunchedProjectile = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("BarrelFiringPoint")),
+			Barrel->GetSocketRotation(FName("BarrelFiringPoint")) // ensure the projectile has the same rotation as the barrel
+			);
+
+		LaunchedProjectile->LaunchProjectile(LaunchSpeed);
+
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }
