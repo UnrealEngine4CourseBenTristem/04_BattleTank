@@ -108,6 +108,7 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	//UE_LOG(LogTemp, Warning, TEXT("DeltaRotator is  %s "), *DeltaRotator.ToString());
 
 	/// The turret and barrel will be rotated at a set speed until DeltaRotator is zero
+	//Turret->RotateTurret(DeltaRotator.GetNormalized().Yaw); // (Lecture 179)
 	Turret->RotateTurret(DeltaRotator.Yaw);
 	Barrel->Elevate(DeltaRotator.Pitch); 
 }
