@@ -17,10 +17,10 @@ class BATTLETANK_API ATank : public APawn
 	GENERATED_BODY()
 
 private:
-	UPROPERTY(EditAnywhere, Category = Firing)
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
 		float LaunchSpeed = 4000.0f; // TODO: find sensible starting value default
 
-	UPROPERTY(EditAnywhere, Category = Setup)
+	UPROPERTY(EditDefaultsOnly, Category = Setup)
 		TSubclassOf<AProjectile> ProjectileBlueprint;  	// info https://docs.unrealengine.com/latest/INT/Programming/UnrealArchitecture/TSubclassOf/
 
 	// Local barrel reference for spawning projectile

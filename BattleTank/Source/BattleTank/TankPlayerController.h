@@ -36,7 +36,7 @@ private:
 	float LineTraceRange = 100000.0;
 
 	// Screen crosshair location multiplier to get the X and Y positions as a percentage of the screen size
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 		float CrosshairXLocation = 0.5f; // half-way across the screen
 		float CrosshairYLocation = 0.33333f;
 
