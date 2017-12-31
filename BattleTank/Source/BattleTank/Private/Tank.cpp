@@ -6,6 +6,7 @@
 #include "Projectile.h"
 #include "TankBarrel.h"
 
+
 // Sets default values
 ATank::ATank()
 {
@@ -64,18 +65,15 @@ void ATank::AimAt( FVector HitLocation)
 /// Fire the main barrel weapon
 void ATank::Fire()
 {
-	auto Time = GetWorld()->GetTimeSeconds();
-	UE_LOG(LogTemp, Warning, TEXT("%f Weapon fired "), Time);
-
 	if (!Barrel) { return; }
 	
-	
-	 
-	
-	// Spawn a projectile at firing socket location
-	GetWorld()->SpawnActor<AProjectile>(
-		ProjectileBlueprint,
-		Barrel->GetSocketLocation(FName("BarrelFiringPoint")),
-		Barrel->GetSocketRotation(FName("BarrelFiringPoint")) 
-		);
+	/// Spawn a projectile at firing socket location and then call the LaunchProjectile method of the returned 
+	///  Projectile class 
+	auto LaunchedProjectile = GetWorld()->SpawnActor<AProjectile>(
+								ProjectileBlueprint,
+								Barrel->GetSocketLocation(FName("BarrelFiringPoint")),
+								Barrel->GetSocketRotation(FName("BarrelFiringPoint")) // ensure the projectile has the same rotation as the barrel
+								);
+
+	LaunchedProjectile->LaunchProjectile(LaunchSpeed);
 }
