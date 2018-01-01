@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-#include "TankAimingComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
@@ -9,7 +8,8 @@
 class UTankBarrel;
 class UTankTurret;
 class AProjectile;
-
+class UTankAimingComponent;
+class UTankMovementComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -38,7 +38,9 @@ protected:
 	// aiming component
 	UTankAimingComponent* TankAimingComponent = nullptr;
 
-	
+	// Movement component. Make it referenceable from the Tank_BP blueprint
+	UPROPERTY(BlueprintReadOnly)
+	UTankMovementComponent* TankMovementComponent = nullptr;
 
 public:	
 	// Sets default values for this pawn's properties
