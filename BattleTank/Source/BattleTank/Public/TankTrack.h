@@ -25,7 +25,7 @@ public:
 	void SetThrottle(float Throttle);
 
 
-
+	float GetTrackMaxDrivingForce();
 
 
 };

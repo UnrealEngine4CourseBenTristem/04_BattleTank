@@ -4,7 +4,10 @@
 
 
 
-
+float UTankTrack::GetTrackMaxDrivingForce()
+{
+	return TrackMaxDrivingForce;
+}
 
 // Sets a throttle between -1 and +1
 void UTankTrack::SetThrottle(float Throttle) 
