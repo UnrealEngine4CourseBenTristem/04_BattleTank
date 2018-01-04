@@ -13,9 +13,6 @@ float UTankTrack::GetTrackMaxDrivingForce()
 void UTankTrack::SetThrottle(float Throttle) 
 {
 
-	// TODO Clamp Throttle value so that player can't over-drive
-
-
 	//auto Time = GetWorld()->GetTimeSeconds();
 	//auto Name = GetName();
 	//UE_LOG(LogTemp, Warning, TEXT("%s Throttle - %f"), *Name, Throttle);
