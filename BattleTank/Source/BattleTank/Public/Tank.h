@@ -36,6 +36,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	// aiming component
+	UPROPERTY(BlueprintReadOnly)
 	UTankAimingComponent* TankAimingComponent = nullptr;
 
 	// Movement component. Make it referenceable from the Tank_BP blueprint

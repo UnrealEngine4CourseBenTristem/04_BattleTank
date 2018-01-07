@@ -18,7 +18,6 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 private:
-	ATank * GetControlledTank() const;
 
 	// Aim towards cross hair
 	void AimTowardsCrosshair();
@@ -39,6 +38,13 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 		float CrosshairXLocation = 0.5f; // half-way across the screen
 		float CrosshairYLocation = 0.33333f;
+
+
+protected:
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	ATank * GetControlledTank() const;
+
 
 public:
 	
