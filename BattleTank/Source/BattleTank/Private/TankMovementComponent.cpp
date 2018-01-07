@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright MarkSystems Ltd.
 
 #include "TankMovementComponent.h"
 #include "TankTrack.h"
@@ -25,10 +25,6 @@ void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, boo
 	// Get unit vector of direction that AI tank wants to travel
 	auto AIForwardIntention = MoveVelocity.GetSafeNormal();
 
-
-	// UE_LOG(LogTemp, Warning, TEXT("%s Move vector  %s"), *GetOwner()->GetName(), *AIForwardIntention.ToString());
-
-
 	auto ForwardThrow = FVector::DotProduct(TankForward, AIForwardIntention);
 
 	auto TurnThrow = FVector::CrossProduct(TankForward, AIForwardIntention).Z;
@@ -43,18 +39,9 @@ void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, boo
 
 void UTankMovementComponent::IntendMoveForward(float Throw)
 {
-
-	//UE_LOG(LogTemp, Warning, TEXT("Intend move  %f"), Throw);
 	if (!LeftTrack || !RightTrack) { return; }
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(Throw);
-	
-	
-	//UE_LOG(LogTemp, Warning, TEXT("%s Move vector  %f "), *GetOwner()->GetName(), Throw);
-
-
-	// TODO: Prevent this function from working if the shoulder buttons are depresesed to avoid double speed
-
 }
 
 
