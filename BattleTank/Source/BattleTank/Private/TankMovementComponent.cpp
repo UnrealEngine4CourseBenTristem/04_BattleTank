@@ -12,6 +12,25 @@ void UTankMovementComponent::Initialise(UTankTrack* LeftTrackToSet, UTankTrack* 
 	RightTrack = RightTrackToSet;
 }
 
+
+// This function is called automatically by the AI movement logic once the call to ToMoveActor() in TankAIController.cpp Tick() has been made
+// 
+void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, bool bForceMaxSpeed)
+{
+	// No need to call super as we are replacing completely
+
+	// Get current direction that the tank is facing
+	auto TankForward = GetOwner()->GetActorForwardVector().GetSafeNormal();
+
+	// Get unit vector of direction that AI tank wants to travel
+	auto AIForwardIntention = MoveVelocity.GetSafeNormal();
+
+	auto DotProductMovement = FVector::DotProduct(TankForward, AIForwardIntention);
+	IntendMoveForward(DotProductMovement);
+	// UE_LOG(LogTemp, Warning, TEXT("%s Move vector  %s"), *GetOwner()->GetName(), *MoveVelocity.GetSafeNormal().ToString());
+
+}
+
 void UTankMovementComponent::IntendMoveForward(float Throw)
 {
 
@@ -19,6 +38,10 @@ void UTankMovementComponent::IntendMoveForward(float Throw)
 	if (!LeftTrack || !RightTrack) { return; }
 	LeftTrack->SetThrottle(Throw);
 	RightTrack->SetThrottle(Throw);
+	
+	
+	//UE_LOG(LogTemp, Warning, TEXT("%s Move vector  %f "), *GetOwner()->GetName(), Throw);
+
 
 	// TODO: Prevent this function from working if the shoulder buttons are depresesed to avoid double speed
 
