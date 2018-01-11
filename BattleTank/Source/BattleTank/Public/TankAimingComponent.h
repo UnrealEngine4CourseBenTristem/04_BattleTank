@@ -45,8 +45,11 @@ public:
 
 	void AimAt(FVector HitLocation, float LaunchSpeed);
 
-	void SetBarrelReference(UTankBarrel* BarrelToSet);
+	//void SetBarrelReference(UTankBarrel* BarrelToSet); // called in Tank.cpp
 
-	void SetTurretReference(UTankTurret* TurretToSet);
+	//void SetTurretReference(UTankTurret* TurretToSet);
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void InitialiseAiming(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet);
 	
 };
