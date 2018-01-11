@@ -60,7 +60,8 @@ void ATank::SetTurretReference(UTankTurret* TurretToSet)
 // Aim at passed FVector
 void ATank::AimAt( FVector HitLocation)
 {
-	
+	if (!TankAimingComponent) { return; }
+
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 
 }
