@@ -37,7 +37,7 @@ protected:
 	// Needs to be in the protected area because FiringStatus needs to be accessed by this class's sub class which
 	// is the TankPlayerController_BP which has a reference to ATank class
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-	EFiringStatus FiringStatus = EFiringStatus::Reloading;
+	EFiringStatus FiringStatus = EFiringStatus::Aiming;
 
 public:	
 	// Sets default values for this component's properties
