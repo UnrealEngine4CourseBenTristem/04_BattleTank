@@ -18,7 +18,7 @@ ATank::ATank()
 	// No need to protect pointers as added in the constructor
 	//TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>("Aiming Component");
 
-	
+	UE_LOG(LogTemp, Warning, TEXT("DONKEY :- ATank Constructor"))
 
 }
 
@@ -28,7 +28,8 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	UE_LOG(LogTemp, Warning, TEXT("DONKEY :- ATank BeginPlay - Code") )
 }
 
 
