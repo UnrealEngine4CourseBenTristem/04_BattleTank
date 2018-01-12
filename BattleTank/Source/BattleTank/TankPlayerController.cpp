@@ -2,7 +2,7 @@
 
 #include "TankPlayerController.h"
 #include "Engine/World.h"
-
+#include "TankAimingComponent.h"
 
 
 
@@ -12,15 +12,17 @@ void ATankPlayerController::BeginPlay()
 	Super::BeginPlay();
 	//UE_LOG(LogTemp, Warning, TEXT("TankPlayerController BeginPlay()"));
 
-	auto ControlledTank = GetControlledTank();
+	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
 
-	if (!ControlledTank) {
-		UE_LOG(LogTemp, Warning, TEXT("Player not in possession of a tank"));
+	if (AimingComponent)
+	{
+		FoundAimingComponent(AimingComponent);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player in possession of tank: %s"), *(ControlledTank->GetName()) );
+		UE_LOG(LogTemp, Warning, TEXT("Player controller can't find aiming component at BeginPlay()"));
 	}
+
 }
 
 
@@ -35,12 +37,15 @@ ATank* ATankPlayerController::GetControlledTank() const
 
 
 
+
 void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
 	AimTowardsCrosshair();
 }
+
+
 
 /// Start the tank moving the barrel so that a shot fired from the player's tank
 /// will intersect the crosshair
