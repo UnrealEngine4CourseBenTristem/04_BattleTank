@@ -61,7 +61,7 @@ void ATank::SetTurretReference(UTankTurret* TurretToSet)
 // Aim at passed FVector
 void ATank::AimAt( FVector HitLocation)
 {
-	if (!TankAimingComponent) { return; }
+	if (!ensure(TankAimingComponent)) { return; }
 
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 
@@ -71,9 +71,10 @@ void ATank::AimAt( FVector HitLocation)
 /// Fire the main barrel weapon
 void ATank::Fire()
 {
+	if (!ensure(Barrel)) { return; }
 	bool bIsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 
-	if (Barrel && bIsReloaded) {
+	if (bIsReloaded) {
 
 		
 

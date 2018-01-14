@@ -34,7 +34,7 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::InitialiseAiming(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
 {
-	if (!BarrelToSet || !TurretToSet) { return; }
+	if (!ensure(BarrelToSet && TurretToSet)) { return; } // 
 	Barrel = BarrelToSet;
 	Turret = TurretToSet;
 
@@ -49,8 +49,8 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 
 
 	// protect the Turret and Barrel 
-	if (!Turret) { return; }
-	if (!Barrel) { return; }
+	if (!ensure(Turret)) { return; }
+	if (!ensure(Barrel)) { return; }
 
 	// WorldContextObject will be the keyword 'this'
 
@@ -102,7 +102,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
-	if (!Turret || !Barrel) { return; }
+	if (!ensure(Turret && Barrel)) { return; }
 
 	/// Work out the difference between current barrel rotation, and AimDirection
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
