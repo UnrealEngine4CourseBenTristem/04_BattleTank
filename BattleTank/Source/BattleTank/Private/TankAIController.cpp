@@ -3,7 +3,7 @@
 #include "TankAIController.h"
 #include "Engine/World.h"
 #include "Tank.h"
-
+#include "TankAimingComponent.h"
 
 
 void ATankAIController::Tick(float DeltaTime)
@@ -19,10 +19,16 @@ void ATankAIController::Tick(float DeltaTime)
 		MoveToActor(PlayerTank, AcceptanceRadius);
 
 		/// Aim towards player
-		Cast<ATank>(GetPawn())->AimAt(Cast<ATank>(PlayerTank)->GetActorLocation());
+		// TODO: Get this to work. AimAt is now in TankAimingComponent
+		Cast<UTankAimingComponent>(Cast<ATank>(GetPawn())->GetComponentByClass(UTankAimingComponent::StaticClass()))->AICalledAimAt(Cast<ATank>(PlayerTank)->GetActorLocation());
+		
+		//Cast<ATank>(GetPawn())->AimAt(Cast<ATank>(PlayerTank)->GetActorLocation());
+
+
 
 		//Fire
-		Cast<ATank>(GetPawn())->Fire();
+		//Cast<ATank>(GetPawn())->Fire();
+		Cast<UTankAimingComponent>(Cast<ATank>(GetPawn())->GetComponentByClass(UTankAimingComponent::StaticClass()))->Fire();
 	}
 }
 

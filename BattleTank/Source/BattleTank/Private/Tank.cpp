@@ -2,26 +2,24 @@
 
 
 #include "Tank.h"
-#include "TankAimingComponent.h"
-#include "TankMovementComponent.h"
 #include "Engine.h"
-#include "Projectile.h"
-#include "TankBarrel.h"
+
+
 
 
 // Sets default values
 ATank::ATank()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
-
-	// No need to protect pointers as added in the constructor
-	//TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>("Aiming Component");
-
-	UE_LOG(LogTemp, Warning, TEXT("DONKEY :- ATank Constructor"))
+	PrimaryActorTick.bCanEverTick = true;
 
 }
 
+
+void ATank::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
 
 
 // Called when the game starts or when spawned
@@ -29,7 +27,6 @@ void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("DONKEY :- ATank BeginPlay - Code") )
 }
 
 
@@ -40,54 +37,3 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-
-
-void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
-{
-	//TankAimingComponent->SetBarrelReference(BarrelToSet);
-
-	// Local barrel
-	Barrel = BarrelToSet;
-	
-}
-
-void ATank::SetTurretReference(UTankTurret* TurretToSet)
-{
-	//TankAimingComponent->SetTurretReference(TurretToSet);
-}
-
-
-
-// Aim at passed FVector
-void ATank::AimAt( FVector HitLocation)
-{
-	if (!ensure(TankAimingComponent)) { return; }
-
-	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
-
-}
-
-
-/// Fire the main barrel weapon
-void ATank::Fire()
-{
-	if (!ensure(Barrel)) { return; }
-	bool bIsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-
-	if (bIsReloaded) {
-
-		
-
-		/// Spawn a projectile at firing socket location and then call the LaunchProjectile method of the returned 
-		///  Projectile class 
-		auto LaunchedProjectile = GetWorld()->SpawnActor<AProjectile>(
-			ProjectileBlueprint,
-			Barrel->GetSocketLocation(FName("BarrelFiringPoint")),
-			Barrel->GetSocketRotation(FName("BarrelFiringPoint")) // ensure the projectile has the same rotation as the barrel
-			);
-
-		LaunchedProjectile->LaunchProjectile(LaunchSpeed);
-
-		LastFireTime = FPlatformTime::Seconds();
-	}
-}

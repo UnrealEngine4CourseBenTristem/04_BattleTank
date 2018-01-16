@@ -6,6 +6,7 @@
 #include "TankTurret.h"
 #include "Engine.h"
 #include "GameFramework/Gamemode.h"
+#include "Projectile.h"
 
 
 
@@ -14,23 +15,22 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
+
+	SetComponentTickEnabled(true);
+
+	//bWantsInitializeComponent = true;
 
 	// ...
 }
 
-//void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
-//{
-//	if (!BarrelToSet) { return;  }
-//	Barrel = BarrelToSet;
-//
-//}
-//
-//void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
-//{	
-//	if (!TurretToSet) { return; }
-//	Turret = TurretToSet;
-//}
+void UTankAimingComponent::AICalledAimAt(FVector HitLocation)
+{
+	AimAt(HitLocation, LaunchSpeed);
+
+}
+
+
 
 void UTankAimingComponent::InitialiseAiming(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
 {
@@ -39,6 +39,17 @@ void UTankAimingComponent::InitialiseAiming(UTankBarrel* BarrelToSet, UTankTurre
 	Turret = TurretToSet;
 
 }
+
+// As of UE4.18 in order for this tick component to tick I had to remove this TankAiming component from the Tank_BP blueprint and add it again.
+void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	AimTowardsCrosshair();
+	
+}
+
+
 
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
@@ -119,4 +130,120 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	//Turret->RotateTurret(DeltaRotator.GetNormalized().Yaw); // (Lecture 179)
 	Turret->RotateTurret(DeltaRotator.Yaw);
 	Barrel->Elevate(DeltaRotator.Pitch); 
+}
+
+
+
+
+
+
+/**********  Code below  Originally in TankPlayerController.cpp    *******/
+
+
+
+/// Start the tank moving the barrel so that a shot fired from the player's tank
+/// will intersect the crosshair
+void UTankAimingComponent::AimTowardsCrosshair()
+{
+	
+	FVector OutHitLocation; // OUT parameter
+
+	if (GetSightRayHitLocation(OutHitLocation)) //  Has side-effect, is going to line trace
+	{
+		AimAt(OutHitLocation, LaunchSpeed);
+
+
+	}
+
+}
+
+
+
+
+// Get world location if linetrace through crosshair dot
+bool UTankAimingComponent::GetSightRayHitLocation(FVector& OutHitLocation) const
+{
+	/// Find the crosshair position
+	int32 ViewportSizeX, ViewportSizeY;
+    GetWorld()->GetFirstPlayerController()->GetViewportSize(ViewportSizeX, ViewportSizeY);
+
+	FVector2D ScreenLocation = FVector2D(ViewportSizeX * CrosshairXLocation, ViewportSizeY * CrosshairYLocation);
+
+
+	/// De-project the screen co-ordinate to a world co-ordinate look direction
+	FVector PlayerLookDirection;
+	if (GetLookDirection(ScreenLocation, PlayerLookDirection))
+	{
+		// Line-trace along that look direction, and see what we hit (up to max range)
+		return GetLookVectorHitLocation(PlayerLookDirection, OutHitLocation);
+
+	}
+
+	return false;
+
+}
+
+
+
+
+
+
+
+bool UTankAimingComponent::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const
+{
+
+	FVector PlayerWorldLocation; // not used anywhere but required for the DeprojectScreenPositionToWorld() function
+
+	return GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, PlayerWorldLocation, LookDirection);
+
+}
+
+
+
+bool UTankAimingComponent::GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const
+{
+	FHitResult OutHitResult;
+
+	auto StartLocation =  GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+	auto EndLocation = StartLocation + (LookDirection * LineTraceRange);
+
+	if (GetWorld()->LineTraceSingleByChannel(OutHitResult,
+		StartLocation,
+		EndLocation,
+		ECollisionChannel::ECC_Visibility)
+
+		)
+	{
+		HitLocation = OutHitResult.Location;
+		return true;
+	}
+	HitLocation = FVector(0); // Set hit location to zero if nothing hit
+	return false; // Line-trace didn't succeed
+}
+
+
+
+
+/// Fire the main barrel weapon
+void UTankAimingComponent::Fire()
+{
+	if (!ensure(Barrel)) { return; }
+	bool bIsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+
+	if (bIsReloaded) {
+
+		
+
+	/// Spawn a projectile at firing socket location and then call the LaunchProjectile method of the returned 
+	///  Projectile class 
+		auto LaunchedProjectile = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("BarrelFiringPoint")),
+			Barrel->GetSocketRotation(FName("BarrelFiringPoint")) // ensure the projectile has the same rotation as the barrel
+			);
+
+		LaunchedProjectile->LaunchProjectile(LaunchSpeed);
+
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }

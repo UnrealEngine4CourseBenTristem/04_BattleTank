@@ -35,7 +35,7 @@ void AProjectile::Tick(float DeltaTime)
 void AProjectile::LaunchProjectile(float Speed)
 {
 	auto Time = GetWorld()->GetTimeSeconds();
-	UE_LOG(LogTemp, Warning, TEXT("%f LaunchProjectile with speed %f"), Time, Speed);
+	//UE_LOG(LogTemp, Warning, TEXT("%f LaunchProjectile with speed %f"), Time, Speed);
 
 	// Set velocity and direction of the projectile
 	ProjectileMovement->SetVelocityInLocalSpace(FVector::ForwardVector * Speed); // The forward vector of the projectile was set when we spawned the projectile 

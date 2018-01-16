@@ -5,11 +5,7 @@
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
 
-class UTankBarrel;
-class UTankTurret;
-class AProjectile;
-class UTankAimingComponent;
-class UTankMovementComponent;
+
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -17,31 +13,12 @@ class BATTLETANK_API ATank : public APawn
 	GENERATED_BODY()
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Firing")
-		float LaunchSpeed = 4000.0f; // TODO: find sensible starting value default
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		TSubclassOf<AProjectile> ProjectileBlueprint;  	// info https://docs.unrealengine.com/latest/INT/Programming/UnrealArchitecture/TSubclassOf/
-
-	// Local barrel reference for spawning projectile
-	UTankBarrel* Barrel = nullptr;
-
-	// Reload time in seconds
-	float ReloadTimeInSeconds = 3;
-
-	double LastFireTime = 0;
+	
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// aiming component
-	UPROPERTY(BlueprintReadOnly)
-	UTankAimingComponent* TankAimingComponent = nullptr;
-
-	// Movement component. Make it referenceable from the Tank_BP blueprint
-	UPROPERTY(BlueprintReadOnly)
-	UTankMovementComponent* TankMovementComponent = nullptr;
 
 public:	
 	// Sets default values for this pawn's properties
@@ -51,19 +28,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
-	void AimAt(FVector HitLocation);
 
-	// Barrel reference able to be called from blueprint
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-		void SetBarrelReference(UTankBarrel* BarrelToSet);
-
-	// Barrel reference able to be called from blueprint
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-		void SetTurretReference(UTankTurret* TurretToSet);
-
-	// Fire the main barrel
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-		void Fire();
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 	
 };
