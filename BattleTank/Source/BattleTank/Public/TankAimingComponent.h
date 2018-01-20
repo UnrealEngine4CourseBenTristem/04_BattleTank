@@ -42,6 +42,9 @@ private:
 
 	void AimTowardsCrosshair();
 
+	// 
+	FVector AimDirection;
+
 	// Return an OUT parameter, True if hit landscape
 	bool GetSightRayHitLocation(FVector & OutHitLocation) const;
 
@@ -50,6 +53,10 @@ private:
 
 	// return the result of a line trace
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector & HitLocation) const;
+
+	// check if barrel is moving
+	bool IsBarrelMoving() const;
+
 
 	// Screen crosshair location multiplier to get the X and Y positions as a percentage of the screen size
 	UPROPERTY(EditDefaultsOnly)
@@ -86,21 +93,17 @@ protected:
 	// Needs to be in the protected area because FiringStatus needs to be accessed by this class's sub class which
 	// is the TankPlayerController_BP which has a reference to ATank class
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-	EFiringStatus FiringStatus = EFiringStatus::Aiming;
+	EFiringStatus FiringStatus = EFiringStatus::Reloading;
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 
 public:	
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
-	// Called by the TankAIController
-	void AICalledAimAt(FVector HitLocation);
-
-
-	void AimAt(FVector HitLocation, float LaunchSpeed);
-
-	//void SetBarrelReference(UTankBarrel* BarrelToSet); // called in Tank.cpp
-
-	//void SetTurretReference(UTankTurret* TurretToSet);
+	void AimAt(FVector HitLocation);
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void InitialiseAiming(UTankBarrel * BarrelToSet, UTankTurret * TurretToSet);
@@ -113,6 +116,9 @@ public:
 		FActorComponentTickFunction * ThisTickFunction
 	) override;
 
+
+	
+	
 
 	// Fire the main barrel
 	UFUNCTION(BlueprintCallable, Category = "Setup")

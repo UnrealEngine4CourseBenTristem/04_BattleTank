@@ -1,35 +1,29 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAIController.h"
-#include "Engine/World.h"
-#include "Tank.h"
 #include "TankAimingComponent.h"
-
+#include "Runtime/Engine/Classes/GameFramework/Actor.h" // supposed to be where the GetWorld() is defined but still causes wiggly line
 
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	auto PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
+	auto ControlledTank = GetPawn();
 
-	if (ensure(PlayerTank))
-	{
+	if (!ensure(PlayerTank && ControlledTank)) { return; }
+	
 
-		// Move towards player
-		MoveToActor(PlayerTank, AcceptanceRadius);
+	// Move towards player
+	MoveToActor(PlayerTank, AcceptanceRadius); // TODO Check Radius is in cm
 
-		/// Aim towards player
-		// TODO: Get this to work. AimAt is now in TankAimingComponent
-		Cast<UTankAimingComponent>(Cast<ATank>(GetPawn())->GetComponentByClass(UTankAimingComponent::StaticClass()))->AICalledAimAt(Cast<ATank>(PlayerTank)->GetActorLocation());
-		
-		//Cast<ATank>(GetPawn())->AimAt(Cast<ATank>(PlayerTank)->GetActorLocation());
+	/// Aim towards player
+	auto AimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
+	AimingComponent->AimAt(PlayerTank->GetActorLocation());
 
-
-
-		//Fire
-		//Cast<ATank>(GetPawn())->Fire();
-		Cast<UTankAimingComponent>(Cast<ATank>(GetPawn())->GetComponentByClass(UTankAimingComponent::StaticClass()))->Fire();
-	}
+	//Fire
+	AimingComponent->Fire();
+	
 }
 
 

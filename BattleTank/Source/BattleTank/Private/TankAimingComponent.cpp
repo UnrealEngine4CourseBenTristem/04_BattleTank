@@ -24,12 +24,14 @@ UTankAimingComponent::UTankAimingComponent()
 	// ...
 }
 
-void UTankAimingComponent::AICalledAimAt(FVector HitLocation)
+
+void UTankAimingComponent::BeginPlay()
 {
-	AimAt(HitLocation, LaunchSpeed);
+	Super::BeginPlay();
 
+	// ensures that the tanks can't start firing as soon as the game starts
+	LastFireTime = FPlatformTime::Seconds();
 }
-
 
 
 void UTankAimingComponent::InitialiseAiming(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
@@ -46,13 +48,37 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	AimTowardsCrosshair();
-	
+
+	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+	{
+		FiringStatus = EFiringStatus::Reloading;
+	}
+	else if (IsBarrelMoving())
+	{
+		FiringStatus = EFiringStatus::Aiming;
+
+	}
+	else
+	{
+		FiringStatus = EFiringStatus::Locked;
+	}
+
+	// TODO handle aiming and locked states
+}
+
+
+
+bool UTankAimingComponent::IsBarrelMoving() const
+{
+	return !AimDirection.Equals(Barrel->GetForwardVector(), 0.01);
+
+
 }
 
 
 
 
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
+void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	auto OurTankName = GetOwner()->GetName(); // GetOwner causes intellisense error if Engine.h is not included at the top of this file
 	//auto BarrelLocation = Barrel->GetComponentLocation().ToString() ;
@@ -97,7 +123,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 
 	
 		// Aim direction
-		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		AimDirection = OutLaunchVelocity.GetSafeNormal();
 
 		MoveBarrelTowards(AimDirection);
 
@@ -150,8 +176,7 @@ void UTankAimingComponent::AimTowardsCrosshair()
 
 	if (GetSightRayHitLocation(OutHitLocation)) //  Has side-effect, is going to line trace
 	{
-		AimAt(OutHitLocation, LaunchSpeed);
-
+		AimAt(OutHitLocation);
 
 	}
 
@@ -224,16 +249,17 @@ bool UTankAimingComponent::GetLookVectorHitLocation(FVector LookDirection, FVect
 
 
 
+
+
 /// Fire the main barrel weapon
 void UTankAimingComponent::Fire()
 {
-	if (!ensure(Barrel)) { return; }
-	bool bIsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 
-	if (bIsReloaded) {
+	if (FiringStatus !=  EFiringStatus::Reloading) {
 
 		
-
+		if (!ensure(Barrel)) { return; }
+		if (!ensure(ProjectileBlueprint)) { return; }
 	/// Spawn a projectile at firing socket location and then call the LaunchProjectile method of the returned 
 	///  Projectile class 
 		auto LaunchedProjectile = GetWorld()->SpawnActor<AProjectile>(
@@ -244,6 +270,7 @@ void UTankAimingComponent::Fire()
 
 		LaunchedProjectile->LaunchProjectile(LaunchSpeed);
 
+		//FiringStatus = EFiringStatus::Reloading;
 		LastFireTime = FPlatformTime::Seconds();
 	}
 }
