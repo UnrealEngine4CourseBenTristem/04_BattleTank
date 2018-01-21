@@ -145,10 +145,15 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 
+
+
 	// When the barrel is facing the same direction as the aim then the DeltaRotator calculated
 	// in the next line will be zero.
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
-	
+	if (DeltaRotator.Yaw > 180 || DeltaRotator.Yaw < -180)
+	{
+		DeltaRotator.Yaw = BarrelRotator.Yaw - AimAsRotator.Yaw ;
+	}
 
 	//UE_LOG(LogTemp, Warning, TEXT("DeltaRotator is  %s "), *DeltaRotator.ToString());
 
