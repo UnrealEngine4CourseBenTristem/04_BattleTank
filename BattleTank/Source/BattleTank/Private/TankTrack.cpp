@@ -1,6 +1,63 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankTrack.h"
+#include "Delegate.h"
+
+
+UTankTrack::UTankTrack()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+
+	SetComponentTickEnabled(true);
+}
+
+void UTankTrack::BeginPlay()
+{
+	Super::BeginPlay();
+
+
+	// Register Delegate
+	OnComponentHit.AddDynamic(this, &UTankTrack::OnHit);
+
+
+}
+
+void UTankTrack::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
+{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+void UTankTrack::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	auto SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
+
+
+
+	auto CorrectionAcceleration = -SlippageSpeed / DeltaTime * GetRightVector();
+
+	// In order to get the mass of the tank we need the tank root 
+	auto TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
+
+	// 	Calculate sideways friction(Force = mass * acceleration)
+	auto CorrectionForce = TankRoot->GetMass() * CorrectionAcceleration /2 ;
+
+	// Finally apply the force to the tank
+	TankRoot->AddForce(CorrectionForce);
+
+
+}
 
 
 
@@ -8,6 +65,8 @@ float UTankTrack::GetTrackMaxDrivingForce()
 {
 	return TrackMaxDrivingForce;
 }
+
+
 
 // Sets a throttle between -1 and +1
 void UTankTrack::SetThrottle(float Throttle) 
