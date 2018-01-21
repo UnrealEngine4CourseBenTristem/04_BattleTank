@@ -24,39 +24,32 @@ void UTankTrack::BeginPlay()
 
 void UTankTrack::OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
 {
+	DriveTrack();
 
+	// Apply sideways force
+	ApplySidewaysForce();
+
+	CurrentThrottle = 0;
 }
 
 
 
 
-
-
-
-
-
-
-
-void UTankTrack::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
+void UTankTrack::ApplySidewaysForce()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	// Work out required acceleration this frame
 	auto SlippageSpeed = FVector::DotProduct(GetRightVector(), GetComponentVelocity());
-
-
-
+	auto DeltaTime = GetWorld()->GetDeltaSeconds();
 	auto CorrectionAcceleration = -SlippageSpeed / DeltaTime * GetRightVector();
 
 	// In order to get the mass of the tank we need the tank root 
 	auto TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
 
 	// 	Calculate sideways friction(Force = mass * acceleration)
-	auto CorrectionForce = TankRoot->GetMass() * CorrectionAcceleration /2 ;
+	auto CorrectionForce = TankRoot->GetMass() * CorrectionAcceleration / 2;
 
 	// Finally apply the force to the tank
 	TankRoot->AddForce(CorrectionForce);
-
-
 }
 
 
@@ -72,12 +65,17 @@ float UTankTrack::GetTrackMaxDrivingForce()
 void UTankTrack::SetThrottle(float Throttle) 
 {
 
+	CurrentThrottle = FMath::Clamp<float>(CurrentThrottle + Throttle, -1, 1);
+}
+
+void UTankTrack::DriveTrack()
+{
 	//auto Time = GetWorld()->GetTimeSeconds();
 	//auto Name = GetName();
 	//UE_LOG(LogTemp, Warning, TEXT("%s Throttle - %f"), *Name, Throttle);
 
 	// Calculate the force that will be applied
-	auto ForceApplied = GetForwardVector() * Throttle * TrackMaxDrivingForce;
+	auto ForceApplied = GetForwardVector() * CurrentThrottle * TrackMaxDrivingForce;
 
 
 	// Get the location where the force will be applied to
