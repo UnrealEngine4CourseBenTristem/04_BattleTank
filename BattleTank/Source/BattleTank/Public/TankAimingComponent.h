@@ -13,7 +13,8 @@ enum class EFiringStatus : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 
@@ -71,13 +72,13 @@ private:
 
 	/****************** Originally from Tank.h ****************/
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
-		float LaunchSpeed = 4000.0f; // TODO: find sensible starting value default
+	float LaunchSpeed = 4000.0f; // TODO: find sensible starting value default
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		TSubclassOf<AProjectile> ProjectileBlueprint;  	// info https://docs.unrealengine.com/latest/INT/Programming/UnrealArchitecture/TSubclassOf/
+	TSubclassOf<AProjectile> ProjectileBlueprint;  	// info https://docs.unrealengine.com/latest/INT/Programming/UnrealArchitecture/TSubclassOf/
 
-														// Local barrel reference for spawning projectile
-	//UTankBarrel* Barrel = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	int AmmoCount = 5;
 
 	// Reload time in seconds
 	float ReloadTimeInSeconds = 3;
@@ -123,4 +124,8 @@ public:
 	// Fire the main barrel
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Fire();
+
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+		int GetAmmoCount() const;
 };

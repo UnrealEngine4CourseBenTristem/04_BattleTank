@@ -48,6 +48,10 @@ EFiringStatus UTankAimingComponent::GetFiringState() const
 	return FiringStatus;
 }
 
+int UTankAimingComponent::GetAmmoCount() const
+{
+	return AmmoCount;
+}
 
 // As of UE4.18 in order for this tick component to tick I had to remove this TankAiming component from the Tank_BP blueprint and add it again.
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
@@ -55,8 +59,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	AimTowardsCrosshair();
-
-	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+	if (AmmoCount <= 0)
+	{
+		FiringStatus = EFiringStatus::OutOfAmmo;
+	}
+	else if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
 	{
 		FiringStatus = EFiringStatus::Reloading;
 	}
@@ -269,7 +276,7 @@ bool UTankAimingComponent::GetLookVectorHitLocation(FVector LookDirection, FVect
 void UTankAimingComponent::Fire()
 {
 
-	if (FiringStatus !=  EFiringStatus::Reloading) {
+	if (FiringStatus ==  EFiringStatus::Locked  || FiringStatus == EFiringStatus::Aiming) {
 
 		
 		if (!ensure(Barrel)) { return; }
@@ -284,7 +291,10 @@ void UTankAimingComponent::Fire()
 
 		LaunchedProjectile->LaunchProjectile(LaunchSpeed);
 
-		//FiringStatus = EFiringStatus::Reloading;
+		
 		LastFireTime = FPlatformTime::Seconds();
+		AmmoCount -= 1;
+		
 	}
 }
+
