@@ -42,6 +42,13 @@ void UTankAimingComponent::InitialiseAiming(UTankBarrel* BarrelToSet, UTankTurre
 
 }
 
+
+EFiringStatus UTankAimingComponent::GetFiringState() const
+{
+	return FiringStatus;
+}
+
+
 // As of UE4.18 in order for this tick component to tick I had to remove this TankAiming component from the Tank_BP blueprint and add it again.
 void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
 {
@@ -65,6 +72,8 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 	// TODO handle aiming and locked states
 }
+
+
 
 
 

@@ -117,7 +117,7 @@ public:
 	) override;
 
 
-	
+	EFiringStatus GetFiringState() const; // const because we don't want it changing any member variables
 	
 
 	// Fire the main barrel
