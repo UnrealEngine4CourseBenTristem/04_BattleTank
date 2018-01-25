@@ -78,9 +78,10 @@ private:
 	TSubclassOf<AProjectile> ProjectileBlueprint;  	// info https://docs.unrealengine.com/latest/INT/Programming/UnrealArchitecture/TSubclassOf/
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	int AmmoCount = 5;
+	int32 AmmoCount = 5;
 
 	// Reload time in seconds
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	float ReloadTimeInSeconds = 3;
 
 	double LastFireTime = 0;
@@ -127,5 +128,5 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
-		int GetAmmoCount() const;
+		int32 GetAmmoCount() const;
 };
